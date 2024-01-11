@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Flâpé Pâté is a version of Flappy Bird in a Critical Role setting.">
+    <meta name="author" content="Kasia Kosturek">
+
+    <!-- Open Graph -->
+    <meta name="og:description" content="Flâpé Pâté is a version of Flappy Bird in a Critical Role setting.">
+    <meta property="og:url" content="https://flape-pate.netlify.app">
+    <meta property="og:type" content="website">
+    <!-- <meta property="og:image" content=""> -->
+
+    <!-- Twitter -->
+    <meta name="twitter:description" content="Flâpé Pâté is a version of Flappy Bird in a Critical Role setting.">
+    <meta name="twitter:url" content="https://flape-pate.netlify.app">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- <meta name="twitter:image:src" content="TODO"> -->
+    <meta name="twitter:site" content="@kocvrek">
+    <meta name="twitter:creator" content="@kocvrek">
+    <meta name="twitter:creator:id" content="96159226">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="stylesheet" href="/style.css">
+
+    <title>Flâpé Pâté</title>
+  </head>
+  <body>
+    <div id="top-menu">
+      <button id="sfx" class="pixelated" title="SFX">(x)</button>
+      <button id="open-info" class="pixelated" title="About">(?)</button>
+    </div>
+    <div id="start-ui" class="ui">
+      <h1>START GAME</h1>
+      <div id="credits">
+        <h2>Game by Kasia Kosturek</h2>
+        <h2>Art by Robyn C V Howl</h2>
+        <h2>Sound by Kate Jacobs</h2>
+      </div>
+    </div>
+    <div id="over-ui" class="ui">
+      <h1>GAME OVER</h1>
+      <div id="scores" class="pixelated">
+        <h2>YOUR SCORE: <span id="score" /></h2>
+        <h2>HIGH SCORE: <span id="high-score"/></h2>
+        <hr>
+        <h2><label for="name">Submit your score</label></h2>
+        <form id="form">
+          <div class="pixelated">
+            <input autofocus id="name" name="name" maxlength="16" minlength="3" size="16" pattern="[a-zA-Z0-9@_-]{3,16}" placeholder="enter your name" required />
+          </div>
+          <button class="pixelated" title="Submit" type="submit" disabled>OK</button>
+        </form>
+      </div>
+      <div>
+        <button id="open-leaderboard" class="pixelated">(L)</button>
+        <button id="play" class="pixelated">(P)</button>
+      </div>
+    </div>
+    <dialog id="info">
+      <button class="close">X</button>
+      <p>
+        Flâpé Pâté is a version of Dong Nguyen's Flappy Bird in a Critical Role setting.<br>
+      </p>
+      <p>
+        How to play?<br>
+        Fly through the cave without hitting stalactites.<br>
+        Press SPACE, UP or W to flâp Pâté's wings. 
+      </p>
+      <p>
+        The game is hosted as an open-source project on <a href="https://github.com/kkstrk/flape-pate" target="_blank">GitHub</a>.
+      </p>
+      <p>
+        Game by <a href="https://twitter.com/kocvrek" target="_blank">Kasia Kosturek</a><br>
+        Art by <a href="/" target="_blank">Robyn C V Howl</a><br>
+        Sound by <a href="/" target="_blank">Kate Jacobs</a>
+      </p>
+    </dialog>
+    <dialog id="leaderboard">
+      <button class="close">X</button>
+      <div id="table">
+        <span>RANK</span>
+        <span>NAME</span>
+        <span>SCORE</span>
+        <span>1</span>
+        <span>xyz</span>
+        <span>100000</span>
+        <span>2</span>
+        <span>qwerty</span>
+        <span>6969</span>
+      </div>
+    </dialog>
+    <canvas></canvas>
+    <script type="module" src="/src/canvas.js"></script>
+    <script defer type="module" src="/src/ui.js"></script>
+  </body>
+</html>

@@ -1,0 +1,266 @@
+@font-face {
+	font-family: 'Press Start 2P';
+	src: url('./public/PressStart2P.ttf') format('truetype');
+}
+
+body {
+  font-family: 'Press Start 2P', Courier, monospace;
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  overflow: hidden;
+  position: relative;
+  background-image: url('./public/sprites/background.png');
+  background-color: #373759;
+  background-size: 100% 100%;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  -webkit-font-smoothing: none;
+  color: #fff;
+}
+
+canvas {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+canvas::selection {
+  background: transparent;
+}
+
+h1, h2 {
+  font-weight: normal;
+  text-align: center;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 3vw + 1rem, 3rem);
+  line-height: 4rem;
+  margin: 0;
+}
+
+h2 {
+  font-size: clamp(0.875rem, 1vw + 0.5rem, 1.5rem);
+  line-height: clamp(1rem, 2vw + 0.25rem, 2.25rem);
+}
+
+h2 + h2 {
+  margin-top: 0;
+}
+
+p {
+  font-size: clamp(0.875rem, 1vw + 0.5rem, 1.125rem);
+}
+
+a {
+  color: #20C20E;
+  text-decoration: none;
+}
+
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+hr {
+  border-style: dashed;
+  width: 100%;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  pointer-events: all;
+}
+
+input {
+  font: inherit;
+  font-size: 1em;
+  display: block;
+  padding: .5rem 1rem;
+  line-height: 1.25rem;
+  outline: none;
+  border: none;
+  text-transform: uppercase;
+  pointer-events: all;
+}
+
+form {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: #000;
+}
+
+dialog {
+  font: inherit;
+  color: inherit;
+  background-color: #000;
+  border: 3px solid #fff;
+  border-radius: 1px;
+  box-shadow: #000 0 8px 24px 0;
+  overflow: auto;
+  line-height: 1.5;
+}
+
+dialog::backdrop {
+  background: rgba(0 0 0 50%);
+}
+
+@media (max-width: 640px) {
+  dialog {
+      margin: auto 0.5rem;
+      max-height: 66%;
+      width: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  dialog {
+    min-width: 620px;
+    max-width: 50%;
+  }
+}
+
+dialog > .close {
+  height: 1.5rem;
+  width: 1.5rem;
+  float: right;
+  background-color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+dialog > .close:hover,
+dialog > .close:active {
+  color: #adafbc;
+}
+
+.ui {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  gap: 2rem;
+}
+
+#start-ui > h1 {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+#credits {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 5rem;
+}
+
+#over-ui {
+  display: none;
+}
+
+#scores {
+  padding: 1rem;
+  background-color: #221F3E;
+  display: flex;
+  flex-direction: column;
+  margin: 0 1rem;
+}
+
+#top-menu {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  gap: 1rem;
+}
+
+#table {
+  display: grid;
+  grid-template-columns: 4em repeat(2, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 0 1rem;
+  margin: 1rem;
+  text-transform: uppercase;
+}
+
+.playing > #start-ui,
+.playing > #over-ui,
+.playing > #top-menu {
+  display: none;
+}
+
+.over > #start-ui {
+  display: none;
+}
+
+.over > #over-ui {
+  display: flex;
+}
+
+.over > canvas {
+  cursor: default;
+}
+
+.pixelated {
+  position: relative;
+}
+
+.pixelated::after,
+.pixelated::before {
+  content: '';
+  background: transparent;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.pixelated::after {
+  top: -4px;
+  left: 0;
+  border-top: 4px solid currentcolor;
+  border-bottom: 4px solid currentcolor;
+}
+
+.pixelated::before {
+  top: 0;
+  left: -4px;
+  border-left: 4px solid currentcolor;
+  border-right: 4px solid currentcolor;
+}
+
+button.pixelated {
+  color: #000;
+  background-color: #fff;
+  box-shadow: inset -4px -4px 0 0 #adafbc;
+  height: 2.5rem;
+}
+
+button.pixelated:hover,
+button.pixelated:active {
+  background-color: #e7e7e7;
+  box-shadow: inset -5px -5px 0 0 #adafbc;
+}
+
+button:disabled.pixelated {
+  cursor: not-allowed;
+  color: rgba(0 0 0 50%);
+  background-color: #d3d3d3;
+}
