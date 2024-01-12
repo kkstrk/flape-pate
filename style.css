@@ -167,7 +167,13 @@ dialog > .close:active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-bottom: 5rem;
+  padding-bottom: 2rem;
+}
+
+#disclaimer {
+  font-size: 12px;
+  padding: 1rem;
+  text-align: center; 
 }
 
 #over-ui {
