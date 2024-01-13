@@ -15,8 +15,10 @@ canvas.height = window.innerHeight;
 
 // sprites
 const images = {
-	top: new Image(),
-	bottom: new Image(),
+	ceiling: new Image(),
+	ceilingMound: new Image(),
+	floor: new Image(),
+	floorMound: new Image(),
 	pate: new Image(),
 };
 
@@ -44,7 +46,7 @@ const score = {
 		this.current += 1;
 	},
 	draw() {
-		// TODO: consider moving score to HTML DOM
+		// TODO: use HTML DOM to display score
 		ctx.font = '34px "Press Start 2P"';
 		ctx.fillStyle = '#fff';
 		ctx.fillText(`${this.current}`, this.x, this.y);
@@ -83,6 +85,42 @@ const pate = {
 	},
 };
 
+const cave = {
+	x: 0,
+	ceiling: { height: 16 + 32, padding: 16 },
+	floor: { height: 32 + 32, padding: 32 },
+	init() {
+		this.x = 0;
+	},
+	draw() {
+		ctx.beginPath();
+		ctx.rect(0, 0, canvas.width, this.ceiling.padding);
+		ctx.rect(0, canvas.height - this.floor.padding, canvas.width, this.floor.padding); 
+		ctx.fillStyle = '#352940';
+		ctx.fill();
+		ctx.closePath();
+
+		let x = this.x;
+		while (x < canvas.width) {
+			ctx.drawImage(
+				images.ceiling,
+				x,
+				this.ceiling.padding,
+				images.ceiling.width,
+				images.ceiling.height
+			);
+			ctx.drawImage(
+				images.floor,
+				x,
+				canvas.height - this.floor.padding - images.floor.height,
+				images.floor.width,
+				images.floor.height
+			);
+			x += images.ceiling.width;
+		}
+	},
+};
+
 const rocks = {
 	current: 0,
 	visible: [],
@@ -94,39 +132,37 @@ const rocks = {
 		this.visible = [{ x: canvas.width, height: Math.floor(canvas.height * 0.33) }];
 	},
 	draw() {
+		ctx.beginPath();
 		this.visible.forEach(({ x, height }) => {
-			ctx.beginPath();
-			ctx.rect(x, 0, this.width, height);
-			ctx.rect(x, height + this.gap.y, this.width, canvas.height - height - this.gap.y);
-			ctx.fillStyle = '#514062';
-			ctx.fill();
-			ctx.closePath();
+			ctx.rect(x, cave.ceiling.height, this.width, height);
+			ctx.rect(x, height + this.gap.y, this.width, canvas.height - height - this.gap.y - cave.floor.height);
+		});
+		ctx.fillStyle = '#5C486C';
+		ctx.fill();
+		ctx.closePath();	
+
+		this.visible.forEach(({ x: rockX }) => {
+			const x = rockX - images.ceilingMound.width / 2 + this.width / 2;
+			ctx.drawImage(
+				images.ceilingMound,
+				x,
+				cave.ceiling.height,
+				images.ceilingMound.width,
+				images.ceilingMound.height
+			);
+			ctx.drawImage(
+				images.floorMound,
+				x,
+				canvas.height - cave.floor.height - images.floorMound.height,
+				images.floorMound.width,
+				images.floorMound.height
+			);
 		});
 	},
 };
 
-// TODO: on each frame move cave by rocks.vx
-const cave = {
-	height: 34,
-	draw() {
-		ctx.beginPath();
-		ctx.rect(0, 0, canvas.width, this.height);
-		ctx.rect(0, canvas.height - this.height, canvas.width, this.height); 
-		ctx.fillStyle = '#514062';
-		ctx.fill();
-		ctx.closePath();
-
-		// let x = 0;
-		// while (x < canvas.width) {
-		// 	ctx.drawImage(images.top, x, this.height, images.top.width * 2, images.top.height * 2);
-		// 	ctx.drawImage(images.bottom, x, canvas.height - this.height - images.bottom.height * 2, images.bottom.width * 2, images.bottom.height * 2);
-		// 	x += images.top.width * 2;
-		// }
-	},
-};
-
-const pateMaxY = canvas.height - cave.height - pate.height;
-const pateMinY = cave.height;
+const pateMaxY = canvas.height - cave.floor.height - pate.height;
+const pateMinY = cave.ceiling.height;
 
 const rockMinHeight = Math.floor(canvas.height * 0.12);
 const rockMaxHeight = Math.floor(canvas.height * 0.88 - rocks.gap.y);
@@ -135,6 +171,7 @@ const startGame = () => {
 	score.init();
 	pate.init();
 	rocks.init();
+	cave.init();
 
 	state = states.playing;
 	raf = requestAnimationFrame(draw);
@@ -184,7 +221,7 @@ const draw = () => {
 	const currentRock = rocks.visible.at(rocks.current);
 	if (pate.x + pate.width >= currentRock.x && (
 		// collided with top rock
-		pate.y <= currentRock.height
+		pate.y <= cave.ceiling.height + currentRock.height
 		// collided with bottom rock
         || pate.y + pate.height >= currentRock.height + rocks.gap.y
 	)) {
@@ -196,21 +233,28 @@ const draw = () => {
 	pate.vy += 0.3; // fall velocity
 	pate.y = Math.min(pate.y + pate.vy, pateMaxY);
 
+	// animate cave
+	if (cave.x % images.ceiling.width === 0) {
+		cave.x = -rocks.vx;
+	} else {
+		cave.x -= rocks.vx;
+	}
+
 	// animate rocks
 	rocks.visible.forEach((rock) => {
 		rock.x -= rocks.vx;
 	});
 
 	// remove rocks that are no longer visible
-	if (rocks.visible.at(0).x + rocks.width < 0) {
+	if (rocks.visible.at(0).x + rocks.width + 32 < 0) { // 32 for mounds
 		rocks.visible.shift();
 		rocks.current -= 1;
 	}
 
 	// add rocks that will become visible
-	if (rocks.visible.at(-1).x < canvas.width - rocks.width - rocks.gap.x) {
+	if (rocks.visible.at(-1).x + rocks.width < canvas.width) {
 		rocks.visible.push({
-			x: canvas.width,
+			x: rocks.visible.at(-1).x + rocks.width + rocks.gap.x,
 			// TODO: adjust height in reference to previous rock
 			height: Math.random() * (rockMaxHeight - rockMinHeight) + rockMinHeight
 		});
@@ -266,6 +310,8 @@ allImages.forEach((image) => {
 		}
 	});
 });
-images.top.src = '/sprites/top.png';
-images.bottom.src = '/sprites/bottom.png';
+images.ceiling.src = '/sprites/ceiling.png';
+images.ceilingMound.src = '/sprites/ceiling-mound.png';
+images.floor.src = '/sprites/floor.png';
+images.floorMound.src = '/sprites/floor-mound.png';
 images.pate.src = '/sprites/pate.png';
