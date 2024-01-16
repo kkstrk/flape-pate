@@ -1,6 +1,6 @@
 @font-face {
 	font-family: 'Press Start 2P';
-	src: url('./public/PressStart2P.ttf') format('truetype');
+	src: url('./src/assets/PressStart2P.ttf') format('truetype');
 }
 
 body {
@@ -11,7 +11,7 @@ body {
   outline: 0;
   overflow: hidden;
   position: relative;
-  background-image: url('./public/sprites/bg.png');
+  background-image: url('./src/assets/bg.png');
   background-color: #352940;
   background-size: cover;
   image-rendering: -moz-crisp-edges;
@@ -89,6 +89,7 @@ input {
   border: none;
   text-transform: uppercase;
   pointer-events: all;
+  border-radius: 0;
 }
 
 form {
@@ -221,6 +222,37 @@ dialog > .close:active {
   display: none;
 }
 
+#sfx, #open-info {
+  width: 3rem;
+}
+
+#sfx {
+  background-image: url('./src/assets/sfx-on.png');
+  background-size: 1.25rem;
+  background-repeat: no-repeat;
+  background-position: center 9px;
+}
+
+#sfx.muted {
+  background-image: url('./src/assets/sfx-off.png');
+}
+
+#open-leaderboard, #play {
+  background-repeat: no-repeat;
+  background-position: center 1px;
+  padding: 0 2rem;
+}
+
+#open-leaderboard {
+  background-image: url('./src/assets/leaderboard.png');
+  background-size: 2.5rem;
+}
+
+#play {
+  background-image: url('./src/assets/replay.png');
+  background-size: 2rem;
+}
+
 .playing > #start-ui,
 .playing > #over-ui,
 .playing > #top-menu {
@@ -271,6 +303,7 @@ button.pixelated {
   background-color: #fff;
   box-shadow: inset -4px -4px 0 0 #adafbc;
   height: 2.5rem;
+  min-width: 2.5rem;
 }
 
 button.pixelated:hover,

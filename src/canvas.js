@@ -1,7 +1,7 @@
 import { getScore, setScore } from './storage.js';
 
 // html elements
-// const sfxButton = document.getElementById('sfx');
+const sfxButton = document.getElementById('sfx');
 const playButton = document.getElementById('play');
 const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('high-score');
@@ -25,7 +25,9 @@ const images = {
 // animation frames
 const fps = 60;
 let raf;
-let prevFrame = 0; 
+let prevFrame = 0;
+
+let sfx = true;
 
 const states = {
 	start: 0,
@@ -315,3 +317,11 @@ images.ceilingMound.src = '/sprites/ceiling-mound.png';
 images.floor.src = '/sprites/floor.png';
 images.floorMound.src = '/sprites/floor-mound.png';
 images.pate.src = '/sprites/pate.png';
+
+// sfx
+sfxButton.title = 'Mute';
+sfxButton.addEventListener('click', () => {
+	sfx = !sfx;
+	sfxButton.classList.toggle('muted', !sfx);
+	sfxButton.title = sfx ? 'Mute' : 'Unmute';
+});

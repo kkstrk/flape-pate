@@ -34,8 +34,8 @@
   </head>
   <body>
     <div id="top-menu">
-      <button id="sfx" class="pixelated" title="SFX">(x)</button>
-      <button id="open-info" class="pixelated" title="About">(?)</button>
+      <button id="sfx" class="pixelated"></button>
+      <button id="open-info" class="pixelated" title="About">i</button>
     </div>
     <div id="start-ui" class="ui">
       <h1>START GAME</h1>
@@ -61,12 +61,12 @@
         </form>
       </div>
       <div>
-        <button id="open-leaderboard" class="pixelated">(L)</button>
-        <button id="play" class="pixelated">(P)</button>
+        <button id="open-leaderboard" class="pixelated" title="Leaderboard"></button>
+        <button id="play" class="pixelated" title="Play"></button>
       </div>
     </div>
     <dialog id="info">
-      <button class="close">X</button>
+      <button class="close" title="Close">X</button>
       <p>
         Flâpé Pâté is a version of Dong Nguyen's Flappy Bird in a Critical Role setting.<br>
       </p>
@@ -85,7 +85,7 @@
       </p>
     </dialog>
     <dialog id="leaderboard">
-      <button class="close">X</button>
+      <button class="close" title="Close">X</button>
       <p id="loader">LOADING...</p>
       <p id="error">SOMETHING WENT WRONG. TRY AGAIN</p>
       <div id="table">
