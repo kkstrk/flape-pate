@@ -127,8 +127,8 @@ const rocks = {
 	current: 0,
 	visible: [],
 	vx: 4,
-	width: 60,
-	gap: { x: 210, y: 200 },
+	width: 64,
+	gap: { x: 224, y: 192 },
 	init() {
 		this.current = 0;
 		this.visible = [{ x: canvas.width, height: Math.floor(canvas.height * 0.33) }];
@@ -166,8 +166,8 @@ const rocks = {
 const pateMaxY = canvas.height - cave.floor.height - pate.height;
 const pateMinY = cave.ceiling.height;
 
-const rockMinHeight = Math.floor(canvas.height * 0.12);
-const rockMaxHeight = Math.floor(canvas.height * 0.88 - rocks.gap.y);
+const rockMinHeight = 96;
+const rockMaxHeight = canvas.height - cave.floor.height - rocks.gap.y - rockMinHeight;
 
 const startGame = () => {
 	score.init();
@@ -254,11 +254,14 @@ const draw = () => {
 	}
 
 	// add rocks that will become visible
-	if (rocks.visible.at(-1).x + rocks.width < canvas.width) {
+	const lastRock = rocks.visible.at(-1);
+	if (lastRock.x + rocks.width < canvas.width) {
+		const minHeight = Math.max(lastRock.height - 320, rockMinHeight);
+		const maxHeight = Math.min(lastRock.height + 608, rockMaxHeight);
+
 		rocks.visible.push({
-			x: rocks.visible.at(-1).x + rocks.width + rocks.gap.x,
-			// TODO: adjust height in reference to previous rock
-			height: Math.random() * (rockMaxHeight - rockMinHeight) + rockMinHeight
+			x: lastRock.x + rocks.width + rocks.gap.x,
+			height: Math.floor(Math.random() * (maxHeight - minHeight) + minHeight)
 		});
 	}
 
