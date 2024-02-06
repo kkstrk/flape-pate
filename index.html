@@ -32,11 +32,11 @@
 
     <title>Flâpé Pâté</title>
   </head>
-  <body>
-    <div id="top-menu">
+  <body class="start">
+    <header>
       <button id="sfx" class="pixelated"></button>
       <button id="open-info" class="pixelated" title="About">i</button>
-    </div>
+    </header>
     <div id="start-ui" class="ui">
       <h1>START GAME</h1>
       <div id="credits">
@@ -44,8 +44,9 @@
         <h2>Art by Robyn C V Howl</h2>
         <h2>Sound by Kate Jacobs</h2>
       </div>
-      <span id="disclaimer">This project is unofficial fan content and is not approved or endorsed in any way by Critical Role.</span>
+      <p id="disclaimer">This project is unofficial fan content and is not approved or endorsed in any way by Critical Role.</p>
     </div>
+    <div id="playing-ui"></div>
     <div id="over-ui" class="ui">
       <h1>GAME OVER</h1>
       <div id="scores" class="pixelated">
@@ -95,7 +96,7 @@
       </div>
     </dialog>
     <canvas></canvas>
-    <script type="module" src="/src/canvas.js"></script>
-    <script defer type="module" src="/src/ui.js"></script>
+    <script type="module" src="/src/game.js"></script>
+    <script type="module" src="/src/ui.js"></script>
   </body>
 </html>

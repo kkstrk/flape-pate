@@ -13,7 +13,9 @@ body {
   position: relative;
   background-image: url('./src/assets/bg.png');
   background-color: #352940;
-  background-size: cover;
+  background-repeat: repeat-x;
+  background-size: auto calc(100% - 48px - 64px);
+  background-position-y: 48px;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
@@ -108,7 +110,7 @@ dialog {
   border-radius: 1px;
   box-shadow: #000 0 8px 24px 0;
   overflow: auto;
-  line-height: 1.5;
+  line-height: 1.5; 
   padding: 2rem clamp(0.5rem, 2vw - 0.25rem, 2rem);
   position: relative;
 }
@@ -149,6 +151,16 @@ dialog > .close:active {
   color: #adafbc;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  gap: 1rem;
+}
+
 .ui {
   position: fixed;
   height: 100%;
@@ -178,11 +190,17 @@ dialog > .close:active {
 #disclaimer {
   font-size: 12px;
   padding: 0.75rem;
+  margin: 0;
   text-align: center; 
 }
 
-#over-ui {
-  display: none;
+#playing-ui {
+  display: flex;
+  position: fixed;
+  top: 6rem;
+  font-size: 34px;
+  width: 100%;
+  justify-content: center;
 }
 
 #scores {
@@ -191,16 +209,6 @@ dialog > .close:active {
   display: flex;
   flex-direction: column;
   margin: 0 1rem;
-}
-
-#top-menu {
-  display: flex;
-  justify-content: space-between;
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  right: 1rem;
-  gap: 1rem;
 }
 
 #table {
@@ -253,18 +261,14 @@ dialog > .close:active {
   background-size: 2rem;
 }
 
+.start > #playing-ui,
+.start > #over-ui,
+.playing > header,
 .playing > #start-ui,
 .playing > #over-ui,
-.playing > #top-menu {
+.over > #start-ui,
+.over > #playing-ui {
   display: none;
-}
-
-.over > #start-ui {
-  display: none;
-}
-
-.over > #over-ui {
-  display: flex;
 }
 
 .over > canvas {
