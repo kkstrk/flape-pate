@@ -254,21 +254,19 @@ self.onmessage = async ({ data }) => {
 		canvas = data.canvas;
 		ctx = canvas.getContext('2d');
 
-		// load cave images
 		await Promise.all([
 			loadImage('floor', '/sprites/floor.png'),
 			loadImage('ceiling', '/sprites/ceiling.png'),
-		]);
-		cave.draw();
-
-		// load rest images
-		await Promise.all([
 			loadImage('ceilingMound', '/sprites/ceiling-mound.png'),
 			loadImage('ceilingPillar', '/sprites/ceiling-pillar.png'),
 			loadImage('floorMound', '/sprites/floor-mound.png'),
 			loadImage('floorPillar', '/sprites/floor-pillar.png'),
 			loadImage('pate', '/sprites/pate.png'),
 		]);
+
+		cave.draw();
+
+		postMessage({ loaded: true });
 	}
 
 	if (data.playing) {

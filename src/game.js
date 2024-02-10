@@ -70,16 +70,6 @@ const endGame = () => {
 	highScoreElement.textContent = highScore.value;
 };
 
-worker.addEventListener('message', ({ data }) => {
-	if (data.over) {
-		endGame();
-	}
-	if (data.updateScore) {
-		score.update();
-		score.draw();
-	}
-});
-
 const play = () => {
 	if (state === states.start) {
 		startGame();
@@ -90,30 +80,43 @@ const play = () => {
 	}
 };
 
-// attach handlers for user interaction
-window.addEventListener('keydown', ({ code }) => {
-	if (code == 'Space' || code == 'KeyW' || code == 'ArrowUp') {
-		play();
+worker.addEventListener('message', ({ data }) => {
+	if (data.loaded) {
+		document.body.classList.replace('loading', 'start');
+
+		// attach handlers for user interaction
+		window.addEventListener('keydown', ({ code }) => {
+			if (code == 'Space' || code == 'KeyW' || code == 'ArrowUp') {
+				play();
+			}
+		});
+
+		if ('ontouchstart' in window
+			|| navigator.maxTouchPoints > 0
+			|| navigator.msMaxTouchPoints > 0) {
+			canvas.addEventListener('touchstart', play);
+		} else {
+			canvas.addEventListener('mousedown', play);
+		}
+
+		playButton.addEventListener('click', () => {
+			state = states.start;
+			play();
+		});
+		
+		// sfx
+		sfxButton.title = 'Mute';
+		sfxButton.addEventListener('click', () => {
+			sfx = !sfx;
+			sfxButton.classList.toggle('muted', !sfx);
+			sfxButton.title = sfx ? 'Mute' : 'Unmute';
+		});
 	}
-});
-
-if ('ontouchstart' in window
-	|| navigator.maxTouchPoints > 0
-	|| navigator.msMaxTouchPoints > 0) {
-	canvas.addEventListener('touchstart', play);
-} else {
-	canvas.addEventListener('mousedown', play);
-}
-
-playButton.addEventListener('click', () => {
-	state = states.start;
-	play();
-});
-
-// sfx
-sfxButton.title = 'Mute';
-sfxButton.addEventListener('click', () => {
-	sfx = !sfx;
-	sfxButton.classList.toggle('muted', !sfx);
-	sfxButton.title = sfx ? 'Mute' : 'Unmute';
+	if (data.over) {
+		endGame();
+	}
+	if (data.updateScore) {
+		score.update();
+		score.draw();
+	}
 });
