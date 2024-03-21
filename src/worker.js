@@ -53,7 +53,7 @@ const pillars = {
 	heightMin: 96,
 	heightMax: 0,
 	width: 83, // images.ceilingPillar images.floorPillar height property value
-	gap: { x: 256, y: 192 },
+	gap: { x: 192, y: 192 },
 	init() {
 		this.current = 0;
 		this.visible = [{ x: canvas.width, height: Math.floor(canvas.height * 0.33) }];
@@ -115,8 +115,8 @@ const pillars = {
 			}
 		});
 
-		this.visible.forEach(({ x: rockX }) => {
-			const x = rockX - images.ceilingMound.width / 2 + this.width / 2;
+		this.visible.forEach(({ x: pillarX }) => {
+			const x = pillarX - images.ceilingMound.width / 2 + this.width / 2;
 			ctx.drawImage(
 				images.ceilingMound,
 				x,
@@ -190,13 +190,13 @@ const draw = () => {
 		return;
 	}
 
-	// collided with rock
-	const currentRock = pillars.visible.at(pillars.current);
-	if (pate.x + pate.width >= currentRock.x && (
-		// collided with top rock
-		pate.y <= cave.ceiling.height + currentRock.height
-		// collided with bottom rock
-		|| pate.y + pate.height >= currentRock.height + pillars.gap.y
+	// collided with pillar (2-3 is for extended hitbox)
+	const currentPillar = pillars.visible.at(pillars.current);
+	if (pate.x + pate.width >= (currentPillar.x + 2) && (
+		// collided with top pillar
+		pate.y <= cave.ceiling.height + (currentPillar.height - 3)
+		// collided with bottom pillar
+		|| pate.y + pate.height >= (currentPillar.height + 3) + pillars.gap.y
 	)) {
 		cancelAnimationFrame(raf);
 		postMessage({ over: true });
@@ -204,7 +204,7 @@ const draw = () => {
 	}
 
 	// animate fly/fall
-	pate.vy += 0.3; // fall velocity
+	pate.vy += 0.4; // fall velocity
 	pate.y = Math.min(pate.y + pate.vy, pate.yMax);
 
 	// animate cave
@@ -215,8 +215,8 @@ const draw = () => {
 	}
 
 	// animate pillars
-	pillars.visible.forEach((rock) => {
-		rock.x -= pillars.vx;
+	pillars.visible.forEach((pillar) => {
+		pillar.x -= pillars.vx;
 	});
 
 	// remove pillars that are no longer visible
@@ -228,12 +228,20 @@ const draw = () => {
 	// add pillars that will become visible
 	const lastPillar = pillars.visible.at(-1);
 	if (lastPillar.x + pillars.width < canvas.width) {
-		const minHeight = Math.max(lastPillar.height - 320, pillars.heightMin);
-		const maxHeight = Math.min(lastPillar.height + 608, pillars.heightMax);
+		let height;
+		if (getRandomBool()) {
+			const min = Math.max(lastPillar.height - 250, pillars.heightMin);
+			const max = Math.max(lastPillar.height - 100, min);
+			height = getRandomNumber(min, max);
+		} else {
+			const max = Math.min(lastPillar.height + 500, pillars.heightMax);
+			const min = Math.min(lastPillar.height + 100, max);
+			height = getRandomNumber(min, max);
+		}
 
 		pillars.visible.push({
 			x: lastPillar.x + pillars.width + pillars.gap.x,
-			height: Math.floor(Math.random() * (maxHeight - minHeight) + minHeight)
+			height,
 		});
 	}
 
@@ -269,6 +277,19 @@ self.onmessage = async ({ data }) => {
 		postMessage({ loaded: true });
 	}
 
+	if (data.resize) {
+		cancelAnimationFrame(raf);
+
+		canvas.height = data.resize.height;
+		canvas.width = data.resize.width;
+
+		cave.init();
+		pillars.init();
+		pate.init();
+
+		cave.draw();
+	}
+
 	if (data.playing) {
 		cave.init();
 		pillars.init();
@@ -278,6 +299,20 @@ self.onmessage = async ({ data }) => {
 	}
 
 	if (data.fly) {
-		pate.vy = -6; // fly velocity
+		pate.vy = -7; // fly velocity
 	}
 };
+
+const getRandomNumber = (min, max) => (
+	Math.floor(Math.random() * (max - min + 1) + min)
+);
+
+const getRandomBool = (() => {
+	const store = [];
+	return () => {
+		const bool = (new Set(store)).size === 1 ? !store[0] : Math.random() > 0.5;
+		store.push(bool);
+		if (store.length > 3) store.shift();
+		return bool;
+	};
+})();

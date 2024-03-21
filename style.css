@@ -28,6 +28,7 @@ canvas {
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 canvas::selection {
@@ -340,14 +341,14 @@ button.pixelated {
   min-width: 2.5rem;
 }
 
-button.pixelated:hover,
-button.pixelated:active {
-  background-color: #e7e7e7;
-  box-shadow: inset -5px -5px 0 0 #adafbc;
-}
-
 button:disabled.pixelated {
   cursor: not-allowed;
   color: rgba(0 0 0 50%);
   background-color: #d3d3d3;
+}
+
+button:not(:disabled):hover.pixelated,
+button:not(:disabled):active.pixelated {
+  background-color: #e7e7e7;
+  box-shadow: inset -5px -5px 0 0 #adafbc;
 }

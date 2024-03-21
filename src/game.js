@@ -20,11 +20,18 @@ worker.postMessage({ canvas: offscreen }, [offscreen]);
 let sfx = true;
 
 const states = {
-	start: 0,
-	playing: 1,
-	over: 2,
+	loading: 'loading',
+	start: 'start',
+	playing: 'playing',
+	over: 'over',
 };
-let state = states.start;
+let state = states.loading;
+const setState = (nextState) => {
+	if (state === nextState) return;
+	document.body.classList.remove(state);
+	document.body.classList.add(nextState);
+	state = nextState;
+};
 
 const score = {
 	value: 0,
@@ -51,16 +58,13 @@ const startGame = () => {
 	score.init();
 	score.draw();
 
-	state = states.playing;
-	document.body.classList.replace('start', 'playing');
-	document.body.classList.replace('over', 'playing');
+	setState(states.playing);
 
 	worker.postMessage({ playing: true });
 };
 
 const endGame = () => {
-	state = states.over;
-	document.body.classList.replace('playing', 'over');
+	setState(states.over);
 
 	if (score.value > highScore.value) {
 		highScore.update();
@@ -71,18 +75,20 @@ const endGame = () => {
 };
 
 const play = () => {
-	if (state === states.start) {
-		startGame();
-	} else if (state === states.over) {
+	if (state === states.loading) {
 		// do nothing
+	} else if (state === states.start) {
+		startGame();
 	} else if (state === states.playing) {
 		worker.postMessage({ fly: true });
+	} else if (state === states.over) {
+		// do nothing
 	}
 };
 
 worker.addEventListener('message', ({ data }) => {
 	if (data.loaded) {
-		document.body.classList.replace('loading', 'start');
+		setState(states.start);
 
 		// attach handlers for user interaction
 		window.addEventListener('keydown', ({ code }) => {
@@ -100,7 +106,7 @@ worker.addEventListener('message', ({ data }) => {
 		}
 
 		playButton.addEventListener('click', () => {
-			state = states.start;
+			setState(states.start);
 			play();
 		});
 		
@@ -111,12 +117,38 @@ worker.addEventListener('message', ({ data }) => {
 			sfxButton.classList.toggle('muted', !sfx);
 			sfxButton.title = sfx ? 'Mute' : 'Unmute';
 		});
+
+		const resize = debounce(() => {
+			worker.postMessage({ resize: { height: window.innerHeight, width: window.innerWidth } });
+			setState(states.start);
+		}, 1000);
+		const observer = new ResizeObserver(([entry]) => {
+			const { contentRect: { height, width } } = entry;
+			if (
+				canvas.height && canvas.width
+				&& (height !== canvas.height || width !== canvas.width)
+			) {
+				setState(states.loading);
+				resize();
+			}
+		});
+		observer.observe(document.body);
 	}
 	if (data.over) {
-		endGame();
+		if (state === states.playing) {
+			endGame();
+		}
 	}
 	if (data.updateScore) {
 		score.update();
 		score.draw();
 	}
 });
+
+const debounce = (callback, ms) => {
+	let timeout = null;
+	return (...args) => {
+		clearTimeout(timeout);
+		timeout = setTimeout(callback, ms, ...args);
+	};
+};
