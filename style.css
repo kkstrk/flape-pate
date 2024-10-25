@@ -246,7 +246,7 @@ header {
   background-image: url('./src/assets/sfx-off.png');
 }
 
-#open-leaderboard, #play {
+#open-leaderboard, #replay {
   background-repeat: no-repeat;
   background-position: center 1px;
   padding: 0 2rem;
@@ -257,7 +257,7 @@ header {
   background-size: 2.5rem;
 }
 
-#play {
+#replay {
   background-image: url('./src/assets/replay.png');
   background-size: 2rem;
 }
@@ -333,15 +333,25 @@ header {
   border-right: 4px solid currentcolor;
 }
 
-button.pixelated {
+button.pixelated,
+.pixelated > input {
   color: #000;
   background-color: #fff;
   box-shadow: inset -4px -4px 0 0 #adafbc;
   height: 2.5rem;
+  box-sizing: border-box;
+}
+
+button.pixelated {
   min-width: 2.5rem;
 }
 
-button:disabled.pixelated {
+button.pixelated:focus-visible {
+  box-shadow: inset -4px -4px 0 0 #adafbc, 0 0 6px 4px #20C20E;
+}
+
+button:disabled.pixelated,
+.pixelated > input:disabled {
   cursor: not-allowed;
   color: rgba(0 0 0 50%);
   background-color: #d3d3d3;

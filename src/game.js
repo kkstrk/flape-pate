@@ -1,10 +1,18 @@
-import { getScore, setScore } from './storage.js';
+import {
+	getScore,
+	setScore,
+	getSfx,
+	setSfx,
+} from './storage.js';
 
 // html elements
 const sfxButton = document.getElementById('sfx');
-const playButton = document.getElementById('play');
+const leaderboardButton = document.getElementById('open-leaderboard');
+const replayButton = document.getElementById('replay');
 const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('high-score');
+const nameInput = document.getElementById('name');
+const submitButton = document.getElementById('form').querySelector('button[type="submit"]');
 const currentScoreElement = document.getElementById('playing-ui');
 
 // offscreen canvas
@@ -17,7 +25,9 @@ offscreen.height = window.innerHeight;
 const worker = new Worker(new URL('./worker', import.meta.url), { type: 'module' });
 worker.postMessage({ canvas: offscreen }, [offscreen]);
 
-let sfx = true;
+// audio
+const backgroundAudio = document.getElementById('bg-audio');
+backgroundAudio.volume = 0.25;
 
 const states = {
 	loading: 'loading',
@@ -61,6 +71,11 @@ const startGame = () => {
 	setState(states.playing);
 
 	worker.postMessage({ playing: true });
+
+	// start audio if autoplay didn't work
+	if (getSfx() && (backgroundAudio.paused || !backgroundAudio.currentTime)) {
+		backgroundAudio.play();
+	}
 };
 
 const endGame = () => {
@@ -72,6 +87,9 @@ const endGame = () => {
 
 	scoreElement.textContent = String(score.value).padStart(String(highScore.value).length, '0');
 	highScoreElement.textContent = highScore.value;
+	submitButton.disabled = !nameInput.checkValidity();
+	nameInput.disabled = false;
+	nameInput.focus();
 };
 
 const play = () => {
@@ -95,6 +113,14 @@ worker.addEventListener('message', ({ data }) => {
 			if (code == 'Space' || code == 'KeyW' || code == 'ArrowUp') {
 				play();
 			}
+			if (state === states.over && document.activeElement !== nameInput) {
+				if (code == 'KeyL') {
+					leaderboardButton.click();
+				}
+				if (code == 'KeyR') {
+					replayButton.click();
+				}
+			}
 		});
 
 		if ('ontouchstart' in window
@@ -105,17 +131,21 @@ worker.addEventListener('message', ({ data }) => {
 			canvas.addEventListener('mousedown', play);
 		}
 
-		playButton.addEventListener('click', () => {
+		replayButton.addEventListener('click', () => {
 			setState(states.start);
 			play();
 		});
 		
 		// sfx
-		sfxButton.title = 'Mute';
+		const initialSfx = getSfx();
+		sfxButton.title = initialSfx ? 'Mute' : 'Unmute';
+		sfxButton.classList.toggle('muted', !initialSfx);
 		sfxButton.addEventListener('click', () => {
-			sfx = !sfx;
-			sfxButton.classList.toggle('muted', !sfx);
+			const sfx = !getSfx();
+			sfx ? backgroundAudio.play() : backgroundAudio.pause();
 			sfxButton.title = sfx ? 'Mute' : 'Unmute';
+			sfxButton.classList.toggle('muted', !sfx);
+			setSfx(sfx);
 		});
 
 		const resize = debounce(() => {

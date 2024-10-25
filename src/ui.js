@@ -67,30 +67,30 @@ const onLeaderboardClose = () => {
 });
 
 const form = document.getElementById('form');
-const input = document.getElementById('name');
-const submit = form.querySelector('button[type="submit"]');
+const nameInput = document.getElementById('name');
+const submitButton = form.querySelector('button[type="submit"]');
 
-input.value = getName();
-submit.disabled = !input.checkValidity();
+nameInput.value = getName();
+submitButton.disabled = !nameInput.checkValidity();
 
 form.addEventListener('submit', async (event) => {
 	event.preventDefault();
-	submit.disabled = true;
-	input.disabled = true;
-	setName(input.value);
+	submitButton.disabled = true;
+	nameInput.disabled = true;
+	setName(nameInput.value);
 	const score = Number(document.getElementById('score').textContent);
-	const error = await postScore(input.value, score);
+	const error = await postScore(nameInput.value, score);
 	if (error) {
-		submit.disabled = false;
-		input.disabled = false;
+		submitButton.disabled = false;
+		nameInput.disabled = false;
 	}
 });
 
-input.addEventListener('input', () => {
-	submit.disabled = !input.checkValidity();
+nameInput.addEventListener('input', () => {
+	submitButton.disabled = !nameInput.checkValidity();
 });
 
-input.addEventListener('keydown', (event) => {
+nameInput.addEventListener('keydown', (event) => {
 	if (!/[a-z0-9@_-]/i.test(event.key)) {
 		event.preventDefault();
 	}
