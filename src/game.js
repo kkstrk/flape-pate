@@ -73,7 +73,7 @@ const startGame = () => {
 
 	worker.postMessage({ playing: true });
 
-	// start audio if autoplay didn't work
+	// start audio
 	if (getSfx() && (backgroundAudio.paused || !backgroundAudio.currentTime)) {
 		backgroundAudio.play();
 	}
@@ -144,10 +144,12 @@ worker.addEventListener('message', ({ data }) => {
 		sfxButton.classList.toggle('muted', !initialSfx);
 		sfxButton.addEventListener('click', () => {
 			const sfx = !getSfx();
-			sfx ? backgroundAudio.play() : backgroundAudio.pause();
 			sfxButton.title = sfx ? 'Mute' : 'Unmute';
 			sfxButton.classList.toggle('muted', !sfx);
 			setSfx(sfx);
+			if (state === states.over) {
+				sfx ? backgroundAudio.play() : backgroundAudio.pause();
+			}
 		});
 
 		const resize = debounce(() => {
