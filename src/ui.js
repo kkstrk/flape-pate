@@ -67,6 +67,7 @@ const onLeaderboardClose = () => {
 });
 
 const form = document.getElementById('form');
+const formResult = document.getElementById('form-result');
 const nameInput = document.getElementById('name');
 const submitButton = form.querySelector('button[type="submit"]');
 
@@ -83,6 +84,13 @@ form.addEventListener('submit', async (event) => {
 	if (error) {
 		submitButton.disabled = false;
 		nameInput.disabled = false;
+		formResult.textContent = 'Something went wrong. Try again.';
+		formResult.style.color = '#E3170A';
+		formResult.style.visibility = 'visible';
+	} else {
+		formResult.textContent = 'Score submitted!';
+		formResult.style.color = '#20C20E';
+		formResult.style.visibility = 'visible';
 	}
 });
 

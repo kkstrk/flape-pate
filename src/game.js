@@ -14,6 +14,7 @@ const highScoreElement = document.getElementById('high-score');
 const nameInput = document.getElementById('name');
 const submitButton = document.getElementById('form').querySelector('button[type="submit"]');
 const currentScoreElement = document.getElementById('playing-ui');
+const formResultElement = document.getElementById('form-result');
 
 // offscreen canvas
 const canvas = document.querySelector('canvas');
@@ -90,6 +91,7 @@ const endGame = () => {
 	submitButton.disabled = !nameInput.checkValidity();
 	nameInput.disabled = false;
 	nameInput.focus();
+	formResultElement.style.visibility = 'hidden';
 };
 
 const play = () => {

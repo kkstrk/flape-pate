@@ -103,6 +103,13 @@ form {
   color: #000;
 }
 
+#form-result {
+  font-size: 0.7rem;
+  margin-top: 0.75rem;
+  text-align: center;
+  visibility: hidden;
+}
+
 dialog {
   font: inherit;
   color: inherit;
