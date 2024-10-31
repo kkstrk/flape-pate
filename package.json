@@ -15,14 +15,14 @@
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "confusing-browser-globals": "^1.0.11",
-    "eslint": "^9.12.0",
+    "eslint": "^9.13.0",
     "globals": "^15.11.0",
     "stylelint": "^16.10.0",
     "stylelint-config-standard": "^36.0.1",
-    "vite": "^5.4.9"
+    "vite": "^5.4.10"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.5"
+    "@supabase/supabase-js": "^2.46.1"
   },
   "browserslist": [
     "defaults"
